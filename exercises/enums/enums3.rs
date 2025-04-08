@@ -47,10 +47,10 @@ impl State {
             }
             Message::Echo(s) => {
                 self.echo(s);
-                }
+            }
             Message::Move(p) => {
                 self.move_position(p);
-                }
+            }
             Message::Quit => {
                 self.quit();
             }
