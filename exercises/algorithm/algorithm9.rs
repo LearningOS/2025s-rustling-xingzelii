@@ -2,7 +2,6 @@
 	heap
 	This question requires you to implement a binary heap function
 */
-// I AM NOT DONE
 
 use std::cmp::Ord;
 use std::default::Default;
@@ -37,7 +36,9 @@ where
     }
 
     pub fn add(&mut self, value: T) {
-        //TODO
+        self.items.push(value);
+        self.count += 1;
+        self.bubble_up(self.count);
     }
 
     fn parent_idx(&self, idx: usize) -> usize {
@@ -57,8 +58,48 @@ where
     }
 
     fn smallest_child_idx(&self, idx: usize) -> usize {
-        //TODO
-		0
+        let left = self.left_child_idx(idx);
+        let right = self.right_child_idx(idx);
+
+        if right > self.count || (self.comparator)(&self.items[left], &self.items[right]) {
+            left
+        } else {
+            right
+        }
+    }
+
+    fn bubble_up(&mut self, idx: usize) {
+        let mut current = idx;
+        while current > 1 && (self.comparator)(&self.items[current], &self.items[self.parent_idx(current)]) {
+            let parent_idx = self.parent_idx(current);
+            self.items.swap(current, parent_idx);
+            current = parent_idx; 
+        }
+    }
+    
+
+    fn bubble_down(&mut self, idx: usize) {
+        let mut current = idx;
+        while self.children_present(current) {
+            let smallest = self.smallest_child_idx(current);
+            if (self.comparator)(&self.items[smallest], &self.items[current]) {
+                self.items.swap(current, smallest);
+                current = smallest;
+            } else {
+                break;
+            }
+        }
+    }
+
+    fn pop(&mut self) -> Option<T> {
+        if self.count == 0 {
+            return None;
+        }
+
+        self.items.swap(1, self.count);
+        self.count -= 1;
+        self.bubble_down(1);
+        Some(self.items.pop().unwrap())
     }
 }
 
@@ -79,13 +120,12 @@ where
 
 impl<T> Iterator for Heap<T>
 where
-    T: Default,
+    T: Default + Ord,
 {
     type Item = T;
 
     fn next(&mut self) -> Option<T> {
-        //TODO
-		None
+        self.pop()
     }
 }
 
